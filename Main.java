@@ -12,7 +12,6 @@ public class Main {
         interfaceProgram.welcomeInterface(userInput, scanner);
                 // Membuat objek Banner
 
-                // Memanggil metode printBanner
             while (true) {
             System.out.print("[" + userInput.getDomain() + " ~ " + userInput.getUsername() + "]" +
                     "[" + fileSystem.getCurrentPath() + "] ");
