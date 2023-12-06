@@ -19,4 +19,6 @@ public class interfaceProgram {
             System.out.println("Welcome " + userInput.getDomain() + "~" + userInput.getUsername());
         }
     }
+
+    
 }

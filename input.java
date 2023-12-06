@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class input {
     private String domain;
     private String username;
-  
+
     
     public void createUser(Scanner scanner) {
         System.out.println("Enter Domain Name");
@@ -24,6 +24,15 @@ public class input {
         getUsername();
     }
 
+    public void setDomain(String newDomain) {
+        domain = newDomain;
+    }
+
+    public void setUsername(String newUsername) {
+        username = newUsername;
+    }
+
+ 
     public String getUsername() {
         return username;
     }

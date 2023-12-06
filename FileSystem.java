@@ -3,10 +3,29 @@ import java.util.Scanner;
 public class FileSystem {
     private FolderNode root;
     private FolderNode currentFolder;
-
+    private input userInput;
     public FileSystem() {
         this.root = new FolderNode("home", null);
         this.currentFolder = root;
+        this.userInput = new input();
+    }
+
+
+    public void aptGetInstall(String toolName) {
+        System.out.println("Downloading " + toolName + "...");
+        for (int i = 0; i < 10; i++) {
+            System.out.print(">");
+            try {
+                Thread.sleep(200);  // Pause selama 200 milidetik (0.2 detik)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("\ndownloaded");
+        
+        // Simulasi instalasi tool
+        createFile(toolName);
+        System.out.println("Installation complete.");
     }
 
     public void mkdir(String folderName) {
@@ -21,18 +40,16 @@ public class FileSystem {
             currentSubFolder.setNext(newFolder);
         }
     }
-
+    //fungsi clear
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
-    
-    
-    
+    //fungsi create
     public void createFile(String fileName) {
         currentFolder.addFile(fileName);
     }
-    
+    //fungsi cd
     public void cd(String destination) {
         if (destination.equals("..")) {
             FolderNode parent = currentFolder.getParent();
@@ -57,30 +74,73 @@ public class FileSystem {
         }
     }
     
+    //sorting
+    public void sort() {
+        System.out.println("Sorting contents...");
+        bubbleSort(currentFolder);
+        System.out.println("Sort complete.");
+    }
     
+    private void bubbleSort(FolderNode folder) {
+        if (folder == null || folder.getChild() == null) {
+            return;
+        }
+    
+        boolean swapped;
+        do {
+            swapped = false;
+            FolderNode current = folder.getChild();
+            FolderNode previous = null;
+    
+            while (current != null && current.getNext() != null) {
+                FolderNode nextNode = current.getNext();
+                if (current.getName().compareToIgnoreCase(nextNode.getName()) > 0) {
+                    // Swap nodes
+                    if (previous != null) {
+                        previous.setNext(nextNode);
+                    } else {
+                        folder.setChild(nextNode);
+                    }
+    
+                    current.setNext(nextNode.getNext());
+                    nextNode.setNext(current);
+    
+                    current = nextNode;
+                    swapped = true;
+                }
+    
+                previous = current;
+                current = current.getNext();
+            }
+        } while (swapped);
+    }
+    
+    //end sorting
+    //fungsi ls
     public void ls() {
         currentFolder.displayContents();
         System.out.println();
     }
-
+    //fungsi folder saat ini
     public String getCurrentPath() {
-        StringBuilder pathBuilder = new StringBuilder();
+        String path = "";
         FolderNode current = currentFolder;
-
+    
         while (current != null) {
-            pathBuilder.insert(0, "/" + current.getName());
+            // Menambahkan nama folder saat ini ke awal path
+            path = "/" + current.getName() + path;
             current = current.getParent();
         }
-
-        return pathBuilder.length() == 0 ? "/" : pathBuilder.toString();
+    
+        // Jika path masih kosong, berarti kita berada di root
+        return path.isEmpty() ? "/" : path;
     }
+    //fungsi searching
     public void search(String path) {
         String[] folders = path.split("/");
-
         FolderNode current = root;
         StringBuilder fullPath = new StringBuilder();
         fullPath.append("/");
-
         for (String folderName : folders) {
             if (folderName.equals("~")) {
                 current = root;
@@ -91,14 +151,11 @@ public class FileSystem {
                     System.out.println(path + " is not found.");
                     return;
                 }
-
                 fullPath.append("/").append(current.getName());
             }
         }
-
         System.out.println(path + " is found in " + fullPath.toString());
     }
-
     private FolderNode linearSearch(FolderNode current, String folderName) {
         FolderNode currentSubFolder = current.getChild();
         while (currentSubFolder != null) {
@@ -109,21 +166,8 @@ public class FileSystem {
         }
         return null;
     }
-    
-    public void rm(String targetName) {
-        if (targetName.contains(".")) {
-            // Remove file
-            currentFolder.removeFile(targetName);
-            System.out.println(targetName + " removed.");
-        } else {
-            // Remove folder
-            currentFolder.removeSubDirectory(targetName);
-            System.out.println(targetName + " removed.");
-        }
-    }
-    
-    
-
+    //end search
+    //all command process
     public void processCommand(String command, Scanner scanner) {
         switch (command) {
             case "mkdir":
@@ -141,16 +185,19 @@ public class FileSystem {
             case "ls":
                 ls();
                 break;
-            case "exit":
-                scanner.close();
-                System.exit(0);
-                break;
             case "search":
                 String searchPath = scanner.next();
                 search(searchPath);
                 break;
             case "clear":
                 clearScreen();
+                break;
+            case "apt-get-install":
+                String toolName = scanner.next();
+                aptGetInstall(toolName);
+                break;
+            case "sort":
+                sort();
                 break;
             default:
                 System.out.println("Invalid command.");
