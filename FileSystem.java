@@ -10,7 +10,6 @@ public class FileSystem {
         this.userInput = new input();
     }
 
-
     public void aptGetInstall(String toolName) {
         System.out.println("Downloading " + toolName + "...");
         for (int i = 0; i < 10; i++) {
@@ -22,13 +21,19 @@ public class FileSystem {
             }
         }
         System.out.println("\ndownloaded");
-        
+        String apkName = toolName + ".apk";
+
         // Simulasi instalasi tool
-        createFile(toolName);
+        createFile(apkName);
         System.out.println("Installation complete.");
     }
 
-    public void mkdir(String folderName) {
+    //fungsi mkdir
+    public void mkdir(String folderName){
+        if(cekFolderName(folderName)){
+            System.out.println("Folder with the name '" + folderName + "' already exists.");
+            return;
+        }
         FolderNode newFolder = new FolderNode(folderName, currentFolder);
         if (currentFolder.getChild() == null) {
             currentFolder.setChild(newFolder);
@@ -40,15 +45,29 @@ public class FileSystem {
             currentSubFolder.setNext(newFolder);
         }
     }
+
+    private boolean cekFolderName(String folderName){
+        FolderNode currentSubFolder = currentFolder.getChild();
+        while (currentSubFolder != null) {
+            if (currentSubFolder.getName().equals(folderName)) {
+                return true;
+            }
+            currentSubFolder = currentSubFolder.getNext();
+        }
+        return false;
+    }
+
     //fungsi clear
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+    
     //fungsi create
     public void createFile(String fileName) {
-        currentFolder.addFile(fileName);
+        currentFolder.addFile(fileName);   
     }
+
     //fungsi cd
     public void cd(String destination) {
         if (destination.equals("..")) {
@@ -72,6 +91,35 @@ public class FileSystem {
                 }
             }
         }
+    }
+
+    //fungsi delete
+    public void rm(String folderFileName){
+        if (folderFileName.contains(".")) {
+            currentFolder.rmFile(folderFileName);
+        } else {
+            rmFolder(folderFileName);
+        }
+    }
+
+    private void rmFolder(String folderName){
+        FolderNode temp = null;
+        FolderNode currentSubFolder = currentFolder.getChild();
+
+        while (currentSubFolder != null) {
+            if (currentSubFolder.getName().equals(folderName)) {
+                if(temp != null){
+                    temp.setNext(currentSubFolder.getNext());
+                } else {
+                    currentFolder.setChild(currentSubFolder.getNext());
+                }
+                System.out.println("Folder '" + folderName + "' deleted");
+                return;
+            }
+            temp = currentSubFolder;
+            currentSubFolder = currentSubFolder.getNext();
+        }
+        System.out.println("Folder '" + folderName + "' not found");
     }
     
     //sorting
@@ -114,8 +162,8 @@ public class FileSystem {
             }
         } while (swapped);
     }
-    
     //end sorting
+
     //fungsi ls
     public void ls() {
         currentFolder.displayContents();
@@ -131,10 +179,26 @@ public class FileSystem {
             path = "/" + current.getName() + path;
             current = current.getParent();
         }
-    
         // Jika path masih kosong, berarti kita berada di root
         return path.isEmpty() ? "/" : path;
     }
+
+    public void pwd() {
+        Stack stackFolder = new Stack();
+        FolderNode current = currentFolder;
+
+        while (current != null) {
+            stackFolder.push(current.getName());
+            current = current.getParent();
+        }
+
+        System.out.print("You are in the directory: ");
+        while (!stackFolder.isEmpty()) {
+            System.out.print("/" + stackFolder.pop());
+        }
+        System.out.println();
+    }
+    
     //fungsi searching
     public void search(String path) {
         String[] folders = path.split("/");
@@ -167,6 +231,7 @@ public class FileSystem {
         return null;
     }
     //end search
+
     //all command process
     public void processCommand(String command, Scanner scanner) {
         switch (command) {
@@ -176,7 +241,15 @@ public class FileSystem {
                 break;
             case "create":
                 String fileName = scanner.next();
-                createFile(fileName);
+                if (fileName.contains(".")) {
+                    createFile(fileName);
+                } else {
+                    System.out.println("Is Not File");
+                }
+                break;
+            case "rm":
+                String folderFile = scanner.next();
+                rm(folderFile);
                 break;
             case "cd":
                 String folderNameToCd = scanner.next();
@@ -198,6 +271,9 @@ public class FileSystem {
                 break;
             case "sort":
                 sort();
+                break;
+            case "pwd":
+                pwd();
                 break;
             default:
                 System.out.println("Invalid command.");

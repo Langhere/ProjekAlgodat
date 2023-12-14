@@ -32,7 +32,6 @@ public class input {
         username = newUsername;
     }
 
- 
     public String getUsername() {
         return username;
     }

@@ -41,17 +41,79 @@ class FolderNode {
         this.next = next;
     }
 
-    public void addFile(String fileName) {
+
+    public void addFile(String fileName){
         FileNode newFile = new FileNode(fileName);
+
         if (files == null) {
             files = newFile;
         } else {
+            if (cekNameFile(fileName)){
+                int countFile = 1;
+                String nameFile = getFileName(fileName);
+                String formatFile = getFormatFile(fileName);
+
+                while (cekNameFile(fileName)) {
+                    fileName = nameFile + "(" + countFile + ")." + formatFile;
+                    countFile++;
+                }
+
+                newFile = new FileNode(fileName);
+            }
+
             FileNode currentFile = files;
             while (currentFile.getNext() != null) {
                 currentFile = currentFile.getNext();
             }
             currentFile.setNext(newFile);
         }
+    }
+
+    private boolean cekNameFile(String fileName){
+        FileNode currentFile = files;
+        while (currentFile != null) {
+            if (currentFile.getName().equals(fileName)) {
+                return true;
+            }
+            currentFile = currentFile.getNext();
+        }
+        return false;
+    }
+    
+    private String getFileName(String fileName){
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            return fileName.substring(0, dotIndex);
+        }
+        return fileName;
+    }
+    
+    private String getFormatFile(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex + 1);
+        }
+        return "";
+    }
+
+    public void rmFile(String fileName){
+        FileNode temp = null;
+        FileNode currentFile = files;
+
+        while (currentFile != null) {
+            if (currentFile.getName().equals(fileName)) {
+                if (temp != null) {
+                    temp.setNext(currentFile.getNext());
+                } else {
+                    files = currentFile.getNext();
+                }
+                System.out.println("File '" + fileName + "' deleted");
+                return;
+            }
+            temp = currentFile;
+            currentFile = currentFile.getNext();
+        }
+        System.out.println("File '" + fileName + "' not found");
     }
     
     public void displayContents() {
