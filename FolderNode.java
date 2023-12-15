@@ -33,6 +33,10 @@ class FolderNode {
         return files;
     }
 
+    public void setFileChild(FileNode files){
+        this.files = files;
+    }
+
     public void setChild(FolderNode child) {
         this.child = child;
     }

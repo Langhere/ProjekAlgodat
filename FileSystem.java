@@ -121,8 +121,8 @@ public class FileSystem {
         }
         System.out.println("Folder '" + folderName + "' not found");
     }
-    
-    //sorting
+
+    // sorting
     public void sort() {
         System.out.println("Sorting contents...");
         bubbleSort(currentFolder);
@@ -130,7 +130,7 @@ public class FileSystem {
     }
     
     private void bubbleSort(FolderNode folder) {
-        if (folder == null || folder.getChild() == null) {
+        if (folder == null || folder.getChild() == null && folder.getFiles() == null ) {
             return;
         }
     
@@ -160,13 +160,39 @@ public class FileSystem {
                 previous = current;
                 current = current.getNext();
             }
+            
+            FileNode currentFile = folder.getFiles();
+            FileNode previousFile = null;
+
+            while (currentFile != null && currentFile.getNext() != null) {
+                FileNode nextFile = currentFile.getNext();
+                if (currentFile.getName().compareToIgnoreCase(nextFile.getName()) > 0) {
+                    if (previousFile != null) {
+                        previousFile.setNext(nextFile);
+                    } else {
+                        folder.setFileChild(nextFile);
+                    }
+                
+                    currentFile.setNext(nextFile.getNext());
+                    nextFile.setNext(currentFile);
+                
+                    currentFile = nextFile;
+                    swapped = true;
+                }
+
+                
+                
+            
+                previousFile = currentFile;
+                currentFile = currentFile.getNext();
+            }
         } while (swapped);
     }
     //end sorting
 
     //fungsi ls
     public void ls() {
-        currentFolder.displayContents();
+        currentFolder.displayContents();    
         System.out.println();
     }
     //fungsi folder saat ini
@@ -237,7 +263,11 @@ public class FileSystem {
         switch (command) {
             case "mkdir":
                 String folderName = scanner.next();
-                mkdir(folderName);
+                if (folderName.contains(".")) {
+                    System.out.println("Is Not Folder");
+                } else {
+                    mkdir(folderName);
+                }
                 break;
             case "create":
                 String fileName = scanner.next();
