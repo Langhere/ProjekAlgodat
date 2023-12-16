@@ -119,19 +119,21 @@ class FolderNode {
         }
         System.out.println("File '" + fileName + "' not found");
     }
-    
-    public void displayContents() {
-        FileNode currentFile = files;
-        while (currentFile != null) {
-            System.out.print(currentFile.getName() + " ");
-            currentFile = currentFile.getNext();
-        }
 
-        FolderNode currentSubFolder = child;
-        while (currentSubFolder != null) {
-            System.out.print(currentSubFolder.getName() + " ");
-            currentSubFolder.displayContents(); // Rekursif ke anak-anak
-            currentSubFolder = currentSubFolder.getNext();
+    public void displayContents(FolderNode currentFolder) {
+        if (this == currentFolder) {
+            FileNode currentFile = files;
+            while (currentFile != null) {
+                System.out.print(currentFile.getName() + " ");
+                currentFile = currentFile.getNext();
+            }
+
+            FolderNode currentSubFolder = child;
+            while (currentSubFolder != null) {
+                System.out.print(currentSubFolder.getName() + " ");
+                currentSubFolder.displayContents(currentFolder); // Rekursif ke anak-anak
+                currentSubFolder = currentSubFolder.getNext();
+            }
         }
     }
 }

@@ -192,9 +192,10 @@ public class FileSystem {
 
     //fungsi ls
     public void ls() {
-        currentFolder.displayContents();    
+        currentFolder.displayContents(currentFolder);    
         System.out.println();
     }
+    
     //fungsi folder saat ini
     public String getCurrentPath() {
         String path = "";
