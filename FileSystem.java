@@ -1,13 +1,16 @@
 import java.util.Scanner;
 
 public class FileSystem {
+    Banner baner = new Banner();
     private FolderNode root;
     private FolderNode currentFolder;
-    private input userInput;
+    // private input userInput;
+    private CheckWebsitePaths toolHacker;
     public FileSystem() {
         this.root = new FolderNode("home", null);
         this.currentFolder = root;
-        this.userInput = new input();
+        this.toolHacker = new CheckWebsitePaths();
+        // this.userInput = new input();
     }
 
     public void aptGetInstall(String toolName) {
@@ -27,7 +30,7 @@ public class FileSystem {
         createFile(apkName);
         System.out.println("Installation complete.");
     }
-
+    
     //fungsi mkdir
     public void mkdir(String folderName){
         if(cekFolderName(folderName)){
@@ -64,9 +67,11 @@ public class FileSystem {
     }
     
     //fungsi create
+    //fungsi create
     public void createFile(String fileName) {
         currentFolder.addFile(fileName);   
     }
+
 
     //fungsi cd
     public void cd(String destination) {
@@ -179,10 +184,6 @@ public class FileSystem {
                     currentFile = nextFile;
                     swapped = true;
                 }
-
-                
-                
-            
                 previousFile = currentFile;
                 currentFile = currentFile.getNext();
             }
@@ -258,7 +259,15 @@ public class FileSystem {
         return null;
     }
     //end search
-
+    //command tools db
+    // Fungsi untuk menggunakan VulnFinder
+    private void useVulnFinder(String websiteUrl) {
+            toolHacker.checkPath(websiteUrl, "/.git");
+            toolHacker.checkPath(websiteUrl, "/.env");
+            toolHacker.checkPath(websiteUrl, "/robots.txt");
+            // Anda dapat menambahkan uji coba path lainnya di sini
+    }
+    //end command tools db
     //all command process
     public void processCommand(String command, Scanner scanner) {
         switch (command) {
@@ -305,6 +314,17 @@ public class FileSystem {
                 break;
             case "pwd":
                 pwd();
+                break;
+            case "use":
+            String useTool = scanner.next();
+            if(useTool.equals("ghostweb")){
+                    baner.printBanner2();
+                    System.out.print("Masukkan URL Website (http/https) : ");
+                    String websiteUrl = scanner.next();
+                    useVulnFinder(websiteUrl);
+                } else {
+                    System.out.println("Invalid Tool Name!");
+                }
                 break;
             default:
                 System.out.println("Invalid command.");
