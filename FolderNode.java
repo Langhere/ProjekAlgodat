@@ -4,9 +4,6 @@ class FolderNode {
     private FolderNode child;
     private FolderNode next;
     private FileNode files;
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
 
     public FolderNode(String name, FolderNode parent) {
         this.name = name;
