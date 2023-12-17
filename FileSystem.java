@@ -267,6 +267,9 @@ public class FileSystem {
             toolHacker.checkPath(websiteUrl, "/robots.txt");
             // Anda dapat menambahkan uji coba path lainnya di sini
     }
+    public void useNobaraXSS(String websiteUrl) {
+        toolHacker.useNobaraXSS(websiteUrl);
+    }
     //end command tools db
     //all command process
     public void processCommand(String command, Scanner scanner) {
@@ -317,15 +320,19 @@ public class FileSystem {
                 break;
             case "use":
             String useTool = scanner.next();
-            if(useTool.equals("ghostweb")){
+                if(useTool.equals("ghostweb")) {
                     baner.printBanner2();
                     System.out.print("Masukkan URL Website (http/https) : ");
                     String websiteUrl = scanner.next();
                     useVulnFinder(websiteUrl);
+                } else if(useTool.equals("nobaraXSS")) {
+                    System.out.print("Masukkan URL Website (http/https) : ");
+                    String websiteUrl = scanner.next();
+                    useNobaraXSS(websiteUrl);
                 } else {
                     System.out.println("Invalid Tool Name!");
                 }
-                break;
+            break;
             default:
                 System.out.println("Invalid command.");
         }
